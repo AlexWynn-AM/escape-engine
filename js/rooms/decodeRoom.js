@@ -106,6 +106,14 @@ function createFragmentProp(label) {
   return { group, glowMat };
 }
 
+/** Place a mesh at (x,y,z) and add it to parent. */
+function place(parent, geo, mat, x, y, z) {
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(x, y, z);
+  parent.add(m);
+  return m;
+}
+
 // ── Main builder ────────────────────────────────────────────────────────
 
 export function buildDecodeRoom(engine, gameState) {
@@ -156,35 +164,20 @@ export function buildDecodeRoom(engine, gameState) {
     });
 
     // Back panel
-    shelf.add(Object.assign(
-      new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.04), woodMat),
-      { position: new THREE.Vector3(0, h / 2, -d / 2 + 0.02) }
-    ));
+    place(shelf, new THREE.BoxGeometry(w, h, 0.04), woodMat, 0, h / 2, -d / 2 + 0.02);
     // Bottom
-    shelf.add(Object.assign(
-      new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, d), woodMat),
-      { position: new THREE.Vector3(0, 0.02, 0) }
-    ));
+    place(shelf, new THREE.BoxGeometry(w, 0.04, d), woodMat, 0, 0.02, 0);
     // Top
-    shelf.add(Object.assign(
-      new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, d), woodMat),
-      { position: new THREE.Vector3(0, h, 0) }
-    ));
+    place(shelf, new THREE.BoxGeometry(w, 0.04, d), woodMat, 0, h, 0);
     // Sides
     [-1, 1].forEach(side => {
-      shelf.add(Object.assign(
-        new THREE.Mesh(new THREE.BoxGeometry(0.04, h, d), woodMat),
-        { position: new THREE.Vector3(side * (w / 2 - 0.02), h / 2, 0) }
-      ));
+      place(shelf, new THREE.BoxGeometry(0.04, h, d), woodMat, side * (w / 2 - 0.02), h / 2, 0);
     });
 
     // Shelves (internal)
     const shelfCount = Math.floor(h / 0.6);
     for (let i = 1; i < shelfCount; i++) {
-      shelf.add(Object.assign(
-        new THREE.Mesh(new THREE.BoxGeometry(w - 0.08, 0.03, d - 0.04), woodMat),
-        { position: new THREE.Vector3(0, i * (h / shelfCount), 0) }
-      ));
+      place(shelf, new THREE.BoxGeometry(w - 0.08, 0.03, d - 0.04), woodMat, 0, i * (h / shelfCount), 0);
     }
 
     // Books (colored blocks on each shelf)
@@ -232,27 +225,15 @@ export function buildDecodeRoom(engine, gameState) {
   const deskGroup = new THREE.Group();
   const deskMat = new THREE.MeshStandardMaterial({ color: 0x3a2a1a, roughness: 0.8, metalness: 0.1 });
   // Tabletop
-  deskGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.06, 0.8), deskMat),
-    { position: new THREE.Vector3(0, 0.78, 0) }
-  ));
+  place(deskGroup, new THREE.BoxGeometry(1.6, 0.06, 0.8), deskMat, 0, 0.78, 0);
   // Legs
   [[-0.72, -0.32], [-0.72, 0.32], [0.72, -0.32], [0.72, 0.32]].forEach(([x, z]) => {
-    deskGroup.add(Object.assign(
-      new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.78, 0.06), deskMat),
-      { position: new THREE.Vector3(x, 0.39, z) }
-    ));
+    place(deskGroup, new THREE.BoxGeometry(0.06, 0.78, 0.06), deskMat, x, 0.39, z);
   });
   // Desk lamp (simple shape)
   const lampBaseMat = Materials.metal(0x555555);
-  deskGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.04, 16), lampBaseMat),
-    { position: new THREE.Vector3(0.5, 0.83, -0.2) }
-  ));
-  deskGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.35, 8), lampBaseMat),
-    { position: new THREE.Vector3(0.5, 1.02, -0.2) }
-  ));
+  place(deskGroup, new THREE.CylinderGeometry(0.08, 0.1, 0.04, 16), lampBaseMat, 0.5, 0.83, -0.2);
+  place(deskGroup, new THREE.CylinderGeometry(0.012, 0.012, 0.35, 8), lampBaseMat, 0.5, 1.02, -0.2);
   const lampShade = new THREE.Mesh(
     new THREE.ConeGeometry(0.12, 0.1, 16, 1, true),
     new THREE.MeshStandardMaterial({ color: 0x225533, roughness: 0.7, metalness: 0.2, side: THREE.DoubleSide })
@@ -292,26 +273,14 @@ export function buildDecodeRoom(engine, gameState) {
   const consoleDarkMat = new THREE.MeshStandardMaterial({ color: 0x1a1e22, roughness: 0.4, metalness: 0.6 });
 
   // Main console body
-  consoleGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.BoxGeometry(3.0, 1.1, 0.7), consoleMat),
-    { position: new THREE.Vector3(0, 0.55, 0) }
-  ));
+  place(consoleGroup, new THREE.BoxGeometry(3.0, 1.1, 0.7), consoleMat, 0, 0.55, 0);
   // Console top/angled panel
-  consoleGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.05, 0.8), consoleMat),
-    { position: new THREE.Vector3(0, 1.1, -0.05) }
-  ));
+  place(consoleGroup, new THREE.BoxGeometry(3.0, 0.05, 0.8), consoleMat, 0, 1.1, -0.05);
   // Upper panel (instrument rack)
-  consoleGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.4, 0.15), consoleDarkMat),
-    { position: new THREE.Vector3(0, 1.85, -0.28) }
-  ));
+  place(consoleGroup, new THREE.BoxGeometry(3.2, 1.4, 0.15), consoleDarkMat, 0, 1.85, -0.28);
   // Side panels
   [-1, 1].forEach(side => {
-    consoleGroup.add(Object.assign(
-      new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.4, 0.5), consoleMat),
-      { position: new THREE.Vector3(side * 1.55, 1.85, -0.1) }
-    ));
+    place(consoleGroup, new THREE.BoxGeometry(0.08, 1.4, 0.5), consoleMat, side * 1.55, 1.85, -0.1);
   });
 
   // Decorative knobs on console
@@ -374,19 +343,13 @@ export function buildDecodeRoom(engine, gameState) {
       { w: fw, h: ft, y:  fh / 2 },
       { w: fw, h: ft, y: -fh / 2 },
     ].forEach(e => {
-      dg.add(Object.assign(
-        new THREE.Mesh(new THREE.BoxGeometry(e.w, e.h, 0.04), frameMat),
-        { position: new THREE.Vector3(0, e.y, 0) }
-      ));
+      place(dg, new THREE.BoxGeometry(e.w, e.h, 0.04), frameMat, 0, e.y, 0);
     });
     [
       { x:  fw / 2 },
       { x: -fw / 2 },
     ].forEach(e => {
-      dg.add(Object.assign(
-        new THREE.Mesh(new THREE.BoxGeometry(ft, fh, 0.04), frameMat),
-        { position: new THREE.Vector3(e.x, 0, 0) }
-      ));
+      place(dg, new THREE.BoxGeometry(ft, fh, 0.04), frameMat, e.x, 0, 0);
     });
 
     dg.position.set(-0.4 + i * 0.4, 0.15, 0);
@@ -441,10 +404,7 @@ export function buildDecodeRoom(engine, gameState) {
     const cab = new THREE.Group();
     const cabMat = Materials.metal(0x4a5060);
     // Body
-    cab.add(Object.assign(
-      new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.3, 0.45), cabMat),
-      { position: new THREE.Vector3(0, 0.65, 0) }
-    ));
+    place(cab, new THREE.BoxGeometry(0.5, 1.3, 0.45), cabMat, 0, 0.65, 0);
     // Drawers (4)
     for (let d = 0; d < 4; d++) {
       const drawer = new THREE.Mesh(
@@ -474,10 +434,7 @@ export function buildDecodeRoom(engine, gameState) {
   // ── Old radio equipment (left side of console area) ─────────────────
   const radioGroup = new THREE.Group();
   // Radio box
-  radioGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.4, 0.35), consoleDarkMat),
-    { position: new THREE.Vector3(0, 0.2, 0) }
-  ));
+  place(radioGroup, new THREE.BoxGeometry(0.6, 0.4, 0.35), consoleDarkMat, 0, 0.2, 0);
   // Tuning dial face
   const dialFace = new THREE.Mesh(
     new THREE.CircleGeometry(0.1, 24),
@@ -501,21 +458,12 @@ export function buildDecodeRoom(engine, gameState) {
   const chairGroup = new THREE.Group();
   const chairMat = new THREE.MeshStandardMaterial({ color: 0x2a1a0a, roughness: 0.9, metalness: 0.05 });
   // Seat
-  chairGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.05, 0.4), chairMat),
-    { position: new THREE.Vector3(0, 0.45, 0) }
-  ));
+  place(chairGroup, new THREE.BoxGeometry(0.45, 0.05, 0.4), chairMat, 0, 0.45, 0);
   // Back
-  chairGroup.add(Object.assign(
-    new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.5, 0.04), chairMat),
-    { position: new THREE.Vector3(0, 0.72, -0.18) }
-  ));
+  place(chairGroup, new THREE.BoxGeometry(0.45, 0.5, 0.04), chairMat, 0, 0.72, -0.18);
   // Legs
   [[-0.18, -0.16], [-0.18, 0.16], [0.18, -0.16], [0.18, 0.16]].forEach(([x, z]) => {
-    chairGroup.add(Object.assign(
-      new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.45, 0.035), chairMat),
-      { position: new THREE.Vector3(x, 0.225, z) }
-    ));
+    place(chairGroup, new THREE.BoxGeometry(0.035, 0.45, 0.035), chairMat, x, 0.225, z);
   });
   chairGroup.position.set(2.0, 0, 3.8);
   chairGroup.rotation.y = Math.PI + 0.2;

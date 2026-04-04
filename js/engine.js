@@ -185,6 +185,15 @@ export class Engine {
     this.hidePrompt();
   }
 
+  _isInScene(obj) {
+    let current = obj;
+    while (current) {
+      if (current === this.scene) return true;
+      current = current.parent;
+    }
+    return false;
+  }
+
   _updateInteraction() {
     if (!this.isLocked || this.narrativeOpen) {
       if (this.currentTarget) {
@@ -196,7 +205,10 @@ export class Engine {
 
     this.raycaster.setFromCamera(this.screenCenter, this.camera);
 
-    const meshes = Array.from(this.interactives.values()).map(i => i.mesh);
+    // Only check interactives whose meshes are in the active scene
+    const meshes = Array.from(this.interactives.values())
+      .filter(i => this._isInScene(i.mesh))
+      .map(i => i.mesh);
     const intersects = this.raycaster.intersectObjects(meshes, true);
 
     if (intersects.length > 0) {

@@ -26,32 +26,35 @@ let rooms = {};
 let hub, mirrorRoom, pressureRoom, decodeRoom;
 
 function loadRooms() {
-  loadingText.textContent = 'Building control room...';
-  loadingFill.style.width = '20%';
+  try {
+    loadingText.textContent = 'Building control room...';
+    loadingFill.style.width = '20%';
+    hub = buildHub(engine, gameState);
+    rooms.hub = hub;
 
-  hub = buildHub(engine, gameState);
-  rooms.hub = hub;
+    loadingText.textContent = 'Calibrating mirrors...';
+    loadingFill.style.width = '40%';
+    mirrorRoom = buildMirrorRoom(engine, gameState);
+    rooms.mirror = mirrorRoom;
 
-  loadingText.textContent = 'Calibrating mirrors...';
-  loadingFill.style.width = '40%';
+    loadingText.textContent = 'Pressurizing chambers...';
+    loadingFill.style.width = '60%';
+    pressureRoom = buildPressureRoom(engine, gameState);
+    rooms.pressure = pressureRoom;
 
-  mirrorRoom = buildMirrorRoom(engine, gameState);
-  rooms.mirror = mirrorRoom;
+    loadingText.textContent = 'Decrypting archives...';
+    loadingFill.style.width = '80%';
+    decodeRoom = buildDecodeRoom(engine, gameState);
+    rooms.decode = decodeRoom;
 
-  loadingText.textContent = 'Pressurizing chambers...';
-  loadingFill.style.width = '60%';
-
-  pressureRoom = buildPressureRoom(engine, gameState);
-  rooms.pressure = pressureRoom;
-
-  loadingText.textContent = 'Decrypting archives...';
-  loadingFill.style.width = '80%';
-
-  decodeRoom = buildDecodeRoom(engine, gameState);
-  rooms.decode = decodeRoom;
-
-  loadingText.textContent = 'Systems ready.';
-  loadingFill.style.width = '100%';
+    loadingText.textContent = 'Systems ready.';
+    loadingFill.style.width = '100%';
+  } catch (err) {
+    console.error('Room build failed:', err);
+    loadingText.textContent = `Error: ${err.message}`;
+    loadingText.style.color = '#e63946';
+    throw err;
+  }
 }
 
 // ─── Room Transitions ───────────────────���─────────────────────────────
@@ -61,7 +64,6 @@ function enterRoom(roomName) {
     const current = rooms[gameState.currentRoom];
     current.exit();
     engine.scene.remove(current.group);
-    engine.clearInteractives();
     engine.clearParticles();
     engine.stopAmbient();
     engine.hideObjective();
