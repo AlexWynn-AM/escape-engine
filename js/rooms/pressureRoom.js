@@ -706,7 +706,6 @@ export function buildPressureRoom(engine, gameState) {
   function exit() {
     engine.stopAmbient();
     engine.clearParticles();
-    engine.clearInteractives();
     engine.hideObjective();
     steamLeft = null;
     steamRight = null;

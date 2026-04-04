@@ -817,7 +817,6 @@ export function buildMirrorRoom(engine, gameState) {
 
     exit() {
       engine.stopAmbient();
-      engine.clearInteractives();
       engine.clearParticles();
       engine.hideObjective();
     },
