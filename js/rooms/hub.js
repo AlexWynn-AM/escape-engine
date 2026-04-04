@@ -316,6 +316,7 @@ export function buildHub(engine, gameState) {
     icon: '\u{1F6AA}',
     onInteract: () => {
       engine.playEffect('clunk');
+      doors.mirror.onInteract();
     }
   });
 
@@ -325,6 +326,7 @@ export function buildHub(engine, gameState) {
     icon: '\u{1F6AA}',
     onInteract: () => {
       engine.playEffect('clunk');
+      doors.pressure.onInteract();
     }
   });
 
@@ -337,6 +339,7 @@ export function buildHub(engine, gameState) {
     onInteract: () => {
       if (archiveUnlocked) {
         engine.playEffect('clunk');
+        doors.archive.onInteract();
       } else {
         engine.playEffect('click');
         engine.showObjective('Restore Le Miroir and La Pression to unlock Les Archives.');
@@ -601,6 +604,7 @@ export function buildHub(engine, gameState) {
       icon: '\u{1F6AA}',
       onInteract: () => {
         engine.playEffect('clunk');
+        doors.archive.onInteract();
       }
     });
 

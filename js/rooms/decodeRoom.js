@@ -529,11 +529,24 @@ export function buildDecodeRoom(engine, gameState) {
   consoleLabel.position.set(0, 2.65, -4.37);
   group.add(consoleLabel);
 
-  // ── Door (back to Room 2) ───────────────────────────────────────────
+  // ── Door (back to hub) ─────────────────────────────────────────────
   const backDoor = createDoor(1.2, 2.2, 0x2d4a6f);
   backDoor.group.position.set(0, 0, DEPTH / 2);
   backDoor.group.rotation.y = Math.PI;
   group.add(backDoor.group);
+
+  // Register back door as interactive
+  engine.registerInteractive(backDoor.doorPanel, {
+    type: 'click',
+    prompt: 'Return / Retourner',
+    icon: '\uD83D\uDEAA',
+    onInteract: () => {
+      engine.playEffect('clunk');
+      if (returnObj.doors.back.onInteract) {
+        returnObj.doors.back.onInteract();
+      }
+    }
+  });
 
   // ── Interactives ────────────────────────────────────────────────────
 
@@ -900,7 +913,7 @@ export function buildDecodeRoom(engine, gameState) {
   }
 
   // ── Return room interface ───────────────────────────────────────────
-  return {
+  const returnObj = {
     group,
     enter,
     exit,
@@ -909,12 +922,9 @@ export function buildDecodeRoom(engine, gameState) {
     doors: {
       back: {
         position: new THREE.Vector3(0, 0, DEPTH / 2),
-        onInteract: () => {
-          if (gameState && gameState.onDoor) {
-            gameState.onDoor('back');
-          }
-        }
+        onInteract: null  // set by main.js
       }
     }
   };
+  return returnObj;
 }
