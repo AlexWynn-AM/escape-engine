@@ -20,9 +20,9 @@ export function buildPressureRoom(engine, gameState) {
   const PRESSURE_B_START = 1.0;
   const PRESSURE_TARGET  = 2.5;      // midpoint
   const PRESSURE_MAX     = 5.0;      // gauge full scale
-  const WIN_TOLERANCE    = 0.15;     // |A-B| < 0.15
-  const MAX_FLOW_RATE    = 0.5;      // atm / min
-  const ALARM_FLOW_RATE  = 0.6;      // atm / min (seal failure threshold)
+  const WIN_TOLERANCE    = 0.3;      // |A-B| < 0.3
+  const MAX_FLOW_RATE    = 2.0;      // atm / min
+  const ALARM_FLOW_RATE  = 2.5;      // atm / min (seal failure threshold)
 
   // ── State ──────────────────────────────────────────────────────────
   let pressureA       = PRESSURE_A_START;
@@ -176,7 +176,7 @@ export function buildPressureRoom(engine, gameState) {
 
   // ── Max rate label (hint stage 1 - starts dim) ────────────────────
   const maxRateLabel = createTextPlane(
-    'MAX 0.5 atm/min', 0.6, 0.15, 14, '#e63946', 'rgba(20,10,10,0.9)'
+    'MAX 2.0 atm/min', 0.6, 0.15, 14, '#e63946', 'rgba(20,10,10,0.9)'
   );
   maxRateLabel.position.set(0, 1.65, 0.25);
   maxRateLabel.material.opacity = 0.15;
@@ -224,7 +224,7 @@ export function buildPressureRoom(engine, gameState) {
 
   // ── Warning sign ──────────────────────────────────────────────────
   const warningSign = createTextPlane(
-    'ATTENTION: Debit maximum 0.5 atm/min',
+    'ATTENTION: Debit maximum 2.0 atm/min',
     1.4, 0.3, 18, '#e63946', 'rgba(40,10,10,0.95)'
   );
   warningSign.position.set(0, 3.3, -ROOM_D / 2 + 0.05);
@@ -491,7 +491,7 @@ export function buildPressureRoom(engine, gameState) {
       ctx.fillText('>>>', 256, 180);
       ctx.font = '14px Courier New';
       ctx.fillStyle = '#e63946';
-      ctx.fillText('MAX 0.5 atm/min', 256, 210);
+      ctx.fillText('MAX 2.0 atm/min', 256, 210);
 
       // Chamber B box
       ctx.strokeStyle = '#4ecdc4';
@@ -847,7 +847,7 @@ export function buildPressureRoom(engine, gameState) {
 
       if (!intercomText) {
         intercomText = createTextPlane(
-          'The seals can handle half an atmosphere per minute. Go slow.',
+          'The seals can handle two atmospheres per minute. Keep it steady.',
           1.6, 0.2, 14, '#44ddcc', 'rgba(10,25,35,0.95)'
         );
         intercomText.position.set(-2.0, 2.4, -ROOM_D / 2 + 0.1);
