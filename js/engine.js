@@ -37,7 +37,7 @@ export class Engine {
       powerPreference: 'high-performance'
     });
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.0;
+    this.renderer.toneMappingExposure = 1.4;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -50,7 +50,7 @@ export class Engine {
     this.clock = new THREE.Clock();
 
     // Default fog
-    this.scene.fog = new THREE.FogExp2(0x0a1628, 0.04);
+    this.scene.fog = new THREE.FogExp2(0x0a1628, 0.025);
     this.scene.background = new THREE.Color(0x0a1628);
   }
 
